@@ -10,8 +10,8 @@ setup(
     version='0.0.1',
     description='Graphic Employer variable type for dedupe',
     packages=['dedupe.variables'],
-    install_requires=['graphiqparser',
+    install_requires=['graphiqparser==0.1',
                       'parseratorvariable >= 0.0.10'],
-    dependency_links=['https://github.com/datamade/graphiqparser/zipball/master#egg=graphiqparser'],
+    dependency_links=['https://github.com/datamade/graphiqparser/zipball/master#egg=graphiqparser-0.1'],
     license='The MIT License: http://www.opensource.org/licenses/mit-license.php'
     )
