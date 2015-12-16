@@ -24,9 +24,9 @@ class EmployerType(ParseratorType) :
     type = "Employer"
 
     def __init__(self, definition) :
-        self.components = (('Corporation', self.compareFields, CORPORATION),
+        self.components = (('Corporation', self.compareFields, CORPORATION),)
 
         super(EmployerType, self).__init__(definition)
 
-        self.tagger = graphiqparser.tag(field)
+        self.tagger = graphiqparser.tag
 
