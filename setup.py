@@ -12,6 +12,6 @@ setup(
     packages=['dedupe.variables'],
     install_requires=['graphiqparser',
                       'parseratorvariable >= 0.0.10'],
-    dependency_links=['git+ssh://git@github.com/datamade/graphiqparser.git#egg=graphiqparser'],
+    dependency_links=['git+https://github.com/datamade/graphiqparser.git#egg=graphiqparser'],
     license='The MIT License: http://www.opensource.org/licenses/mit-license.php'
     )
