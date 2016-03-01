@@ -7,7 +7,7 @@ except ImportError :
 setup(
     name='dedupe-variable-employer',
     url='https://github.com/datamade/dedupe-variables-employer',
-    version='0.0.1',
+    version='0.0.2',
     description='Graphic Employer variable type for dedupe',
     packages=['dedupe.variables'],
     install_requires=['graphiqparser==0.1',
