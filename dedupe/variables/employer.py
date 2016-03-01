@@ -29,6 +29,22 @@ class EmployerType(ParseratorType) :
 
         self.expanded_size = (1 + 1 + 2 * self.n_parts + 1)
 
+    def fields(self, field) :
+        fields = [('%s: Not Missing' % field, 'Dummy'),
+                  ('ambiguous', 'Dummy')]
+
+        fields += [(part, 'Derived') 
+                   for part in self.variable_parts]
+
+        fields += [('%s: Not Missing' % (part,), 
+                    'Not Missing') 
+                   for part in self.variable_parts]
+
+        fields += [('full string', 'String')]
+
+        return fields
+
+
     def compareFields(self, parts, field_1, field_2) :
 
 
