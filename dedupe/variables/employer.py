@@ -38,7 +38,7 @@ class EmployerType(ParseratorType) :
             part_1 = re.sub(r'[.,]', '', part_1)
             part_2 = re.sub(r'[.,]', '', part_2)
 
-x            if part == ('CorporationNameOrganization',
+            if part == ('CorporationNameOrganization',
                           'CorporationName',
                           'ShortForm'):
                 remainder_1 = ' '.join(word for word in part_1.split()
