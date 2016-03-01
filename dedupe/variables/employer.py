@@ -1,5 +1,4 @@
 from parseratorvariable import ParseratorType, consolidate
-from simplecosine.cosine import CosineTextSimilarity
 import graphiqparser
 import numpy
 import functools
@@ -28,46 +27,7 @@ class EmployerType(ParseratorType) :
 
         self.tagger = graphiqparser.tag
 
-        self.corpus = self.grabCorpus()
-
-        self.corpusCompare = CosineTextSimilarity(self.corpus)
-
-    def grabCorpus(self):
-        corpus_filename = os.path.abspath(os.path.dirname(__file__))+'/employer_corpus.csv'
-
-        # make corpus if it doesnt exist
-        if not os.path.exists(corpus_filename):
-            csv_filename = os.path.abspath(os.path.dirname(__file__))+'/employers.csv'
-
-            with open(csv_filename, 'rU') as f:
-                reader = csvkit.DictReader(f)
-
-                words = []
-                for row in reader:
-                    try:
-                        tagged = self.tagger(row['employer'])
-                        name = tagged[0].get('CorporationName')
-                        name = re.sub(r'\.', '', name)
-
-                        words.extend(name.split())
-                    except:
-                        pass
-
-            with open(corpus_filename, "w") as outfile:
-                corpus_rows = [[w] for w in words]
-                writer = csvkit.writer(outfile)
-                writer.writerows(corpus_rows)
-
-        # read in corpus
-        with open(corpus_filename, 'rU') as f:
-            reader = csvkit.reader(f)
-            
-            corpus=[]
-            for row in reader:
-                corpus.append(row[0])
-
-        return corpus
-
+        self.expanded_size = (1 + 1 + 2 * self.n_parts + 1)
 
     def compareFields(self, parts, field_1, field_2) :
 
@@ -75,16 +35,12 @@ class EmployerType(ParseratorType) :
         joinParts = functools.partial(consolidate, components=parts)
         for part, (part_1, part_2) in zip(parts, zip(*map(joinParts, [field_1, field_2]))) :
 
-            part_1 = re.sub(r'\.', '', part_1)
-            part_2 = re.sub(r'\.', '', part_2)
+            part_1 = re.sub(r'[.,]', '', part_1)
+            part_2 = re.sub(r'[.,]', '', part_2)
 
-            if part == ('CorporationName', 'ShortForm') :
-                remainder_1 = ' '.join(word for word in part_1.split()
-                                       if word not in STOP_WORDS)
-                remainder_2 = ' '.join(word for word in part_2.split()
-                                       if word not in STOP_WORDS)
-                yield self.corpusCompare(remainder_1, remainder_2)
-            elif part == ('CorporationNameOrganization',):
+x            if part == ('CorporationNameOrganization',
+                          'CorporationName',
+                          'ShortForm'):
                 remainder_1 = ' '.join(word for word in part_1.split()
                                        if word not in STOP_WORDS)
                 remainder_2 = ' '.join(word for word in part_2.split()
@@ -92,3 +48,43 @@ class EmployerType(ParseratorType) :
                 yield self.compareString(remainder_1, remainder_2)
             else :
                 yield self.compareString(part_1, part_2)
+
+    def comparator(self, field_1, field_2) :
+        distances = numpy.zeros(self.expanded_size)
+        i = 0
+
+        if not (field_1 and field_2) :
+            return distances
+        
+        distances[i] = 1
+        i += 1
+
+        try :
+            parsed_variable_1, variable_type_1 = self.tagger(field_1) 
+            parsed_variable_2, variable_type_2  = self.tagger(field_2)
+        except Exception as e :
+            if self.log_file :
+                import csv
+                with open(self.log_file, 'a') as f :
+                    writer = csv.writer(f)
+                    writer.writerow([e.original_string.encode('utf8')])
+            distances[i] = 1
+            distances[-1] = self.compareString(field_1, field_2)
+            return distances
+
+        i += 1
+
+        variable_type = self.variable_types[variable_type_1]
+
+        for j, dist in enumerate(variable_type['compare'](parsed_variable_1, 
+                                                          parsed_variable_2), 
+                                 i) :
+            distances[j] = dist
+
+        unobserved_parts = numpy.isnan(distances[i:j+1])
+        distances[i:j+1][unobserved_parts] = 0
+        unobserved_parts = (~unobserved_parts).astype(int)
+        distances[(i + self.n_parts):(j + 1 + self.n_parts)] = unobserved_parts
+
+        return distances
+
