@@ -1,5 +1,5 @@
 from parseratorvariable import ParseratorType, consolidate
-import graphiqparser
+import companyparser
 import numpy
 import functools
 import re
@@ -25,7 +25,7 @@ class EmployerType(ParseratorType) :
 
         super(EmployerType, self).__init__(definition)
 
-        self.tagger = graphiqparser.tag
+        self.tagger = companyparser.tag
 
         self.expanded_size = (1 + 1 + 2 * self.n_parts + 1)
 
@@ -51,8 +51,8 @@ class EmployerType(ParseratorType) :
         joinParts = functools.partial(consolidate, components=parts)
         for part, (part_1, part_2) in zip(parts, zip(*map(joinParts, [field_1, field_2]))) :
 
-            part_1 = re.sub(r'[.,]', '', part_1)
-            part_2 = re.sub(r'[.,]', '', part_2)
+            part_1 = re.sub(r'[.,;]', '', part_1)
+            part_2 = re.sub(r'[.,;]', '', part_2)
 
             if part == ('CorporationNameOrganization',
                           'CorporationName',
