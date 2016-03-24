@@ -8,11 +8,11 @@ setup(
     name='dedupe-variable-employer',
     url='https://github.com/datamade/dedupe-variables-employer',
     version='0.0.2',
-    description='Graphic Employer variable type for dedupe',
+    description='Graphiq Employer variable type for dedupe',
     packages=['dedupe.variables'],
-    install_requires=['graphiqparser==0.1',
+    install_requires=['graphiqparser==0.2',
                       'parseratorvariable >= 0.0.10',
                       'simplecosine'],
-    dependency_links=['https://github.com/datamade/graphiqparser/zipball/master#egg=graphiqparser-0.1'],
+    dependency_links=['https://github.com/datamade/graphiqparser/zipball/master#egg=graphiqparser-0.2'],
     license='The MIT License: http://www.opensource.org/licenses/mit-license.php'
     )
