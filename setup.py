@@ -7,11 +7,11 @@ except ImportError :
 setup(
     name='dedupe-variable-employer',
     url='https://github.com/datamade/dedupe-variables-employer',
-    version='0.0.3',
+    version='0.0.4',
     description='Employer variable type for dedupe',
     packages=['dedupe.variables'],
     install_requires=['companyparser==0.2',
-                      'parseratorvariable >= 0.0.10',
+                      'parseratorvariable >= 0.0.14',
                       'simplecosine'],
     license='The MIT License: http://www.opensource.org/licenses/mit-license.php'
     )
