@@ -55,8 +55,8 @@ class EmployerType(ParseratorType) :
             part_2 = re.sub(r'[.,;]', '', part_2)
 
             if part == ('CorporationNameOrganization',
-                          'CorporationName',
-                          'ShortForm'):
+                        'CorporationName',
+                        'ShortForm'):
                 remainder_1 = ' '.join(word for word in part_1.split()
                                        if word not in STOP_WORDS)
                 remainder_2 = ' '.join(word for word in part_2.split()
@@ -79,14 +79,17 @@ class EmployerType(ParseratorType) :
             parsed_variable_1, variable_type_1 = self.tagger(field_1) 
             parsed_variable_2, variable_type_2  = self.tagger(field_2)
         except Exception as e :
-            if self.log_file :
-                import csv
-                with open(self.log_file, 'a') as f :
-                    writer = csv.writer(f)
-                    writer.writerow([e.original_string.encode('utf8')])
-            distances[i] = 1
-            distances[-1] = self.compareString(field_1, field_2)
-            return distances
+            if e.message.startswith('ERROR: Unable to tag this string') :
+                if self.log_file :
+                    import csv
+                    with open(self.log_file, 'a') as f :
+                        writer = csv.writer(f)
+                        writer.writerow([e.original_string.encode('utf8')])
+                distances[i] = 1
+                distances[-1] = self.compareString(field_1, field_2)
+                return distances
+            else :
+                raise
 
         i += 1
 
